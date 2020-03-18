@@ -1,24 +1,26 @@
 const path = require('path')
 
 const express = require('express')
+const bodyParser = require('body-parser')
+
+const errorController = require('./controllers/error')
+
 const app = express()
 
 app.set('view engine', 'ejs') //it tells which template engine to be used to generate dynamic content
 app.set('views', 'views') // to tell where the files are located
 
-const bodyParser = require('body-parser')
+const adminRoutes = require('./routes/admin')
+const shopRoutes = require('./routes/shop')
+
 app.use(bodyParser.urlencoded({ extended : true }))
 app.use(express.static(path.join(__dirname, 'public')))
 
-const adminData = require('./routes/admin')
-const shopRoutes = require('./routes/shop')
 
-app.use('/admin', adminData.routes)
+app.use('/admin', adminRoutes)
 app.use(shopRoutes)
 
-app.use((req, res) => {
-    res.status(404).render('404', {pageTitle: 'Page Not Found'})
-})
+app.use(errorController.get404)
 
 
 app.listen(3000)
