@@ -14,7 +14,7 @@ Router.get('/products/:productId', shopController.getProduct)
 
 Router.get('/cart', shopController.getCart)
 
-Router.get('/cart', shopController.postCart)
+Router.post('/cart', shopController.postCart)
 
 Router.get('/orders', shopController.getOrders)
 
