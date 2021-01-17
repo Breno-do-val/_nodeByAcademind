@@ -1,3 +1,5 @@
+const port = process.env.port || 3400;
+
 const path = require('path');
 
 const express = require('express');
@@ -27,4 +29,6 @@ sequelize.sync().then(result => {
     console.error(err)
 })
 
-app.listen(3400);
+app.listen(port, () => {
+    console.log(`App is running on Port ${port}`)
+});
