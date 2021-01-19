@@ -17,6 +17,8 @@ const User = require('./models/user');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const Cart = require('./models/cart');
+const CartItem = require('./models/cart-item');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -41,9 +43,14 @@ Product.belongsTo(User, {
     onDelete: 'CASCADE'
 });
 
+// Relations
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
-sequelize.sync()
+sequelize.sync({ force: true })
     .then(result => {
         return User.findByPk(1);
     })
