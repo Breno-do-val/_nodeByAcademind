@@ -1,13 +1,19 @@
 const port = process.env.port || 3400;
-
+require('dotenv').config();
 const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 const errorController = require('./controllers/error');
 const sequelize = require('./util/database');
 const app = express();
+const store = new MongoDBStore({
+    uri: process.env.MONGO_DB_STORE,
+    collection: 'users'
+})
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -26,6 +32,7 @@ const OrderItem = require('./models/order-item');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({ secret: 'secret', resave: false, saveUninitialized: false, store: store }));
 
 // A middleware is registered and only executed for incoming requests
 app.use((req, res, next) => {
